@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    お客様情報を入力してください。<br />
+    <form method="post" action="shop_form_check.php">
+        お名前<br />
+        <input type="text" name="shimei" style="width:200px"><br />
+        メールアドレス<br />
+        <input type="text" name="email"><br />
+        郵便番号<br />
+        <input type="text" name="postal1" style="width:50px">
+        <input type="text" name="postal2" style="width:80px"><br />
+        住所<br />
+        <input type="text" name="address" style="width:500px"><br />
+        電話番号<br />
+        <input type="text" name="tel" style="width:150px"><br />
+        <!-- 会員登録の要否を確認する -->
+        <br>
+        <input type="radio" name="order" value="orderonly">今回だけの注文<br />
+        <input type="radio" name="order" value="memberreg">会員登録して注文<br />
+        <br>
+        ※会員登録する方は以下の項目も入力してください。<br><br>
+        パスワードを入力してください。
+        <input type="password" name="pass" style="width:150px"><br>
+        パスワードをもう一度入力してください。
+        <input type="password" name="pass2" style="width:150px"><br>
+        性別 <br>
+        <input type="radio" name="sex" value="male">男性<br>
+        <input type="radio" name="sex" value="female">女性<br>
+        生まれ年<br>
+        <select name="birth" id="birth"></select>       
+        <br><br>
+        <input type="button" onclick="history.back()" value="戻る">
+        <input type="submit" value="OK"><br />
+
+    </form>
+
+    <!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- JQuery -->
+<script>
+    let y = "";
+    for(let i=1910; i<2011; i=i+10){
+        y += "<option value=" + i + ">" + i + "年代</option>"
+    }         
+    $("#birth").html(y);
+</script>
+
+
+</body>
+</html>
