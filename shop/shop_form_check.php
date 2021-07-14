@@ -1,5 +1,9 @@
 <?php
 
+session_start();
+session_regenerate_id(true);
+
+
 require_once('../funcs.php');
 
 $shimei  = h($_POST['shimei']);
@@ -14,6 +18,8 @@ $pass2   = h($_POST['pass2']);
 $sex     = h($_POST['sex']);
 $birth   = h($_POST['birth']);
 
+
+echo '【お客様情報確認】<br />';
 
 $okflg = true;
 
@@ -96,8 +102,48 @@ if($order=='memberreg'){
     echo '<br /><br />';
 }
 
+//DB接続
+try {
+
+    $cart = $_SESSION['cart'];
+    $kazu = $_SESSION['kazu'];
+    $max = count($cart);
+
+    $dbh = new PDO('mysql:dbname=kadai08;charset=utf8;host=localhost','root','root');
+    $honbun = '';
+    for($i=0; $i<$max; $i++){
+        $stmt = $dbh->prepare('SELECT productname, price FROM product WHERE productcode = '.$cart[$i].'');
+        // $data[0] =$cart[$i];
+        $stmt -> execute();
+  
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $name = $result['productname'];
+        $price = $result['price'];
+        $amount = $kazu[$i];
+        $shoukei = $price * $amount;
+        $total += $price*$amount;
+        $n = $i + 1;
+
+        $honbun .= $n.'.'.$name.' : <br />';
+        $honbun .= $price.'円 x';
+        $honbun .= $amount.'個 =';
+        $honbun .= $shoukei.'円 <br /><br />';
+        
+      }
+        $honbun .= '合計：';
+        $honbun .= $total.'円 <br /><br />';
+  } catch (PDOException $e) {
+    exit('DBConnectError:'.$e->getMessage());
+  }
+  
 
 if($okflg == true){
+    
+    echo '<br /><br />【ご購入商品確認】<br /><br />';
+    echo $honbun;
+
+
     echo '<form method="post" action="shop_form_done.php">';
     echo '<input type="hidden" name="shimei" value="'.$shimei.'">';
     echo '<input type="hidden" name="email" value="'.$email.'">';
@@ -109,9 +155,15 @@ if($okflg == true){
     echo '<input type="hidden" name="pass" value="'.$pass.'">';
     echo '<input type="hidden" name="sex" value="'.$sex.'">';
     echo '<input type="hidden" name="birth" value="'.$birth.'">';
+
+    echo 'よろしければ【購入する】するボタンをクリックしてください。<br /><br />';
+
     echo '<input type="button" onclick="history.back()" value="戻る">';
-    echo '<input type="submit" value="OK"><br />';
+    echo '<input type="submit" value="購入する"><br />';
     echo '</form>';
+
+
+
 }else{
     echo '<form>';
     echo '<input type="button" onclick="history.back()" value="戻る">';
